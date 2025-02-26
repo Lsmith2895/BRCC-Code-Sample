@@ -1,7 +1,11 @@
 import gql from 'graphql-tag';
 
 // TODO: implement a GET_TODOS query that will be used in the appolloClient
-export const GET_TODOS = gql``;
+export const GET_TODOS = gql`
+query GetTodos {
+  todos
+}
+`;
 
 // TODO: implement a ADD_TODOS mutation that will be used in the appolloClient
 export const ADD_TODO = gql``;
