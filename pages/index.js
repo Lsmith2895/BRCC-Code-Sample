@@ -8,8 +8,9 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import AddIcon from '@material-ui/icons/Add';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { ADD_TODO, GET_TODOS } from '../document-nodes/todo';
+import TodoList from '../components/TodoList'
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -30,15 +31,9 @@ const useStyles = makeStyles((theme) => ({
 const Index = () => {
   const classes = useStyles();
   // TODO: Implement a useQuery for getting a list of current 
-  
-  
-  // if (loading) {
-  //   return <Typography>Loading...</Typography>;
-  // }
+  const {loading, data, error} = useQuery(GET_TODOS)
 
-  // if (error) {
-  //   return <Typography>Error!</Typography>;
-  // }
+  
 
   const [addTodo] = useMutation(ADD_TODO, {
     refetchQueries: [{ query: GET_TODOS }],
@@ -62,6 +57,14 @@ const Index = () => {
       console.error("Error adding todo:", err);
     }
   };
+
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (error) {
+    return <Typography>Error!</Typography>;
+  }
 
   return (
     <Container maxWidth={'sm'}>
@@ -89,6 +92,7 @@ const Index = () => {
         </Fab>
       </form>
       {/* TODO: Render TodoList component and pass todos data */}
+      <TodoList todos={data}/>
     </Container>
   );
 };

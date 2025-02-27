@@ -1,6 +1,6 @@
 import {makeStyles} from '@material-ui/core';
 // import {useMutation} from '@apollo/react-hooks';
-// import {DELETE_TODO, GET_TODOS, UPDATE_TODO} from '../document-nodes/todo';
+ import todo, {DELETE_TODO, GET_TODOS, UPDATE_TODO} from '../document-nodes/todo';
 
 // NOTE: we typically use TypeScript in our codebase, but for this coding assessment we suggest using JSDoc instead.
 
@@ -15,10 +15,16 @@ const TodoList = ({todos}) => {
   // TODO: implement updateTodo mutation
   
 
-  // TODO: Render TodoList items
   return (
-    <>
-    </>
+    <div>
+      {todos.todos.map((todo =>  {
+      return (<div key={todo.id}>
+        <div>{todo.title}</div>
+        <div>{todo.completed.toString()}</div>
+      </div>
+      )
+    }))}
+    </div>
   );
 };
 
