@@ -40,12 +40,10 @@ const Index = () => {
   //   return <Typography>Error!</Typography>;
   // }
 
-  // TODO: Implement a useMutation for adding TODOs to the list
   const [addTodo] = useMutation(ADD_TODO, {
     refetchQueries: [{ query: GET_TODOS }],
   });
 
-  // TODO: implement state variable for todo
   const [todoTitle, setTodoTitle] = useState('');
 
   const handleAddTodo = async (event) => {
