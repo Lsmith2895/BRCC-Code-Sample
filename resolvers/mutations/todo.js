@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from 'uuid'
 import db from '../../models'
 
 const todo = {
-  // TODO: Implement the createTodo mutation
   async createTodo(parent, args, context, info) {
     
     try {
