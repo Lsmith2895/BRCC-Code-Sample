@@ -4,8 +4,6 @@ import db from '../../models'
 const todo = {
   // TODO: Implement the createTodo mutation
   async createTodo(parent, args, context, info) {
-    console.log(parent, args, context, info)
-    console.log('what is db', db)
     
     try {
       const newTodo = await db.Todo.create({
