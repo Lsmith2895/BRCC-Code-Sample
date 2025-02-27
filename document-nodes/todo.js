@@ -2,7 +2,11 @@ import gql from 'graphql-tag';
 
 export const GET_TODOS = gql`
 query GetTodos {
-  todos
+  todos {
+    id
+    title
+    completed
+  }
 }
 `;
 
