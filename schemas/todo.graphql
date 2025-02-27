@@ -1,16 +1,17 @@
-# TODO: Implement a query node that returns a list of Todos (not String)
+scalar JSON
+
 type Query {
-    todos: [String]
+    todos: [Todo]
 }
 
-# TODO: Update the Todo node with the following fields: id, title, and completed status
 type Todo {
-    title: String
+    id: ID! 
+    title: String!
+    completed: Boolean!
 }
 
-# TODO: Update the following mutations: createTodo, deleteTodo, and updateTodo
 type Mutation {
-    createTodo(data: JSON): Todo,
-    deleteTodo(where: JSON): Int,
-    updateTodo(values: JSON, options: JSON): [JSON],
+    createTodo(data: JSON!): Todo 
+    deleteTodo(where: JSON!): Int 
+    updateTodo(values: JSON!, options: JSON!): [Todo] 
 }

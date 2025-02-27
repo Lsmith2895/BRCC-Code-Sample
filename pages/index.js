@@ -8,6 +8,8 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 import AddIcon from '@material-ui/icons/Add';
+import { useMutation } from '@apollo/client';
+import { ADD_TODO, GET_TODOS } from '../document-nodes/todo';
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -28,9 +30,7 @@ const useStyles = makeStyles((theme) => ({
 const Index = () => {
   const classes = useStyles();
   // TODO: Implement a useQuery for getting a list of current 
-  // TODO: Implement a useMutation for adding TODOs to the list
-
-  // TODO: implement state variable for todo
+  
   
   // if (loading) {
   //   return <Typography>Loading...</Typography>;
@@ -40,10 +40,35 @@ const Index = () => {
   //   return <Typography>Error!</Typography>;
   // }
 
+  const [addTodo] = useMutation(ADD_TODO, {
+    refetchQueries: [{ query: GET_TODOS }],
+  });
+
+  const [todoTitle, setTodoTitle] = useState('');
+
+  const handleAddTodo = async (event) => {
+    event.preventDefault();
+
+    if (!todoTitle.trim()) return;
+
+    try {
+      await addTodo({
+        variables: {
+          data: {title: todoTitle, completed: false },
+        },
+      });
+      setTodoTitle('');
+    } catch (err) {
+      console.error("Error adding todo:", err);
+    }
+  };
+
   return (
     <Container maxWidth={'sm'}>
+      {/* on submit could be moved out later */}
       <form onSubmit={(event) => {
         event.preventDefault();
+        handleAddTodo(event);
       }}>
         <TextField
           id="outlined-dense"
@@ -51,8 +76,8 @@ const Index = () => {
           className={clsx(classes.textField, classes.dense)}
           margin="dense"
           variant="outlined"
-          onChange={() => {}}
-          value={''}
+          onChange={(e) => setTodoTitle(e.target.value)}
+          value={todoTitle}
         />
         <Fab color="primary"
           aria-label="add"
