@@ -91,7 +91,6 @@ const Index = () => {
           <AddIcon/>
         </Fab>
       </form>
-      {/* TODO: Render TodoList component and pass todos data */}
       <TodoList todos={data}/>
     </Container>
   );
