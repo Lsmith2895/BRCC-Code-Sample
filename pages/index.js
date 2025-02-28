@@ -11,6 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { useMutation, useQuery } from '@apollo/client';
 import { ADD_TODO, GET_TODOS } from '../document-nodes/todo';
 import TodoList from '../components/TodoList'
+import TodoCount from '../components/TodoCount';
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -91,6 +92,7 @@ const Index = () => {
           <AddIcon/>
         </Fab>
       </form>
+      <TodoCount todos={data} />
       <TodoList todos={data}/>
     </Container>
   );
