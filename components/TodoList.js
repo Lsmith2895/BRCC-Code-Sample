@@ -1,5 +1,6 @@
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Card, CardContent, Typography, CardActions, Button, Checkbox } from '@material-ui/core';
+import { Card, CardContent, Typography, CardActions, Button, Checkbox, TextField } from '@material-ui/core';
 import { useMutation } from '@apollo/client';
 import { UPDATE_TODO, GET_TODOS, DELETE_TODO } from '../document-nodes/todo';
 
@@ -17,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     flexGrow: 1,
+    cursor: "pointer",
   },
   checkbox: {
     marginRight: theme.spacing(1),
@@ -24,10 +26,15 @@ const useStyles = makeStyles((theme) => ({
   cardActions: {
     paddingRight: theme.spacing(2),
   },
+  textField: {
+    width: "100%",
+  }
 }));
 
 const TodoList = ({ todos }) => {
   const classes = useStyles();
+  const [editingId, setEditingId] = useState(null);
+  const [editedTitle, setEditedTitle] = useState("");
 
   const [updateTodo] = useMutation(UPDATE_TODO, {
     update(cache, { data: { updateTodo } }) {
@@ -57,7 +64,6 @@ const TodoList = ({ todos }) => {
       const deletedId = variables.where.id;
       const existingTodos = cache.readQuery({ query: GET_TODOS });
 
-
       if (!existingTodos || !existingTodos.todos) {
         return;
       }
@@ -69,13 +75,11 @@ const TodoList = ({ todos }) => {
         },
       });
     },
-    refetchQueries: [{ query: GET_TODOS }], // Ensure UI updates in case cache fails
+    refetchQueries: [{ query: GET_TODOS }],
     onError(err) {
-      console.error(" Apollo Error deleting todo:", err);
+      console.error("Apollo Error deleting todo:", err);
     },
   });
-
-
 
   const onToggleComplete = async (id, completed) => {
     try {
@@ -90,27 +94,66 @@ const TodoList = ({ todos }) => {
     }
   };
 
+  const onEditTodo = (id, title) => {
+    setEditingId(id);
+    setEditedTitle(title);
+  };
+
+  const handleEditChange = (e) => {
+    setEditedTitle(e.target.value);
+  };
+
+  const handleEditSubmit = async (id) => {
+    if (!editedTitle.trim()) return;
+
+    try {
+      await updateTodo({
+        variables: {
+          values: { title: editedTitle },
+          options: { id },
+        },
+      });
+    } catch (error) {
+      console.error("Error updating todo title:", error);
+    }
+
+    setEditingId(null); // Exit edit mode
+  };
+
   return (
     <div>
       {todos.todos.map((todo) => (
         <Card key={todo.id} className={classes.card}>
-          <CardContent className={classes.cardContent}>
+          <CardContent className={classes.cardContent} onClick={() => onEditTodo(todo.id, todo.title)}>
             <Checkbox
               className={classes.checkbox}
               checked={todo.completed}
               onChange={() => onToggleComplete(todo.id, todo.completed)}
               color="primary"
             />
-            <Typography className={classes.title}>{todo.title}</Typography>
+
+            {editingId === todo.id ? (
+              <TextField
+                className={classes.textField}
+                value={editedTitle}
+                onChange={handleEditChange}
+                autoFocus
+                onBlur={() => handleEditSubmit(todo.id)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") handleEditSubmit(todo.id);
+                }}
+              />
+            ) : (
+              <Typography className={classes.title}>{todo.title}</Typography>
+            )}
           </CardContent>
+
           <CardActions className={classes.cardActions}>
             <Button
               size="small"
               color="secondary"
               onClick={() => {
-                deleteTodo({
-                  variables: { where: { id: todo.id } }, 
-                })
+                deleteTodo({ variables: { where: { id: todo.id } } });
               }}
             >
               Delete
