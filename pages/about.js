@@ -25,8 +25,9 @@ const About = () => {
             <strong>Started Development:</strong> With a solid understanding in place, I worked through the GitHub issues one at a time ( doing any reseach along the way).
           </li>
           <li>
-            <strong>Created PR's</strong> after each completed issues I created a PR, read over my code and recheck the UI (QA), documented work done, tagged issue that was tackled, merged PR
+            <strong>Created and Merged PRs:</strong> After completing each issue, I created a pull request (PR), carefully reviewed my own code, and performed UI checks (QA) to ensure everything functioned as expected. I documented the work done, tagged the relevant issue, and merged the PR after verification.
           </li>
+
         </ol>
       </>
       
