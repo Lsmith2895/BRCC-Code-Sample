@@ -25,7 +25,6 @@ const todo = {
     return '';
   },
 
-  // TODO: Implement the updateTodo mutation
   async updateTodo(parent, args, context, info) {
     try {
       await db.Todo.update(args.values, {
