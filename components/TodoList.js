@@ -1,9 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Typography, CardActions, Button, Checkbox } from '@material-ui/core';
-// import {useMutation} from '@apollo/react-hooks';
- import todo, {DELETE_TODO, GET_TODOS, UPDATE_TODO} from '../document-nodes/todo';
-
-// NOTE: we typically use TypeScript in our codebase, but for this coding assessment we suggest using JSDoc instead.
+import { useMutation } from '@apollo/client';
+import { UPDATE_TODO, GET_TODOS } from '../document-nodes/todo';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -28,12 +26,38 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TodoList = ({todos}) => {
+const TodoList = ({ todos }) => {
   const classes = useStyles();
 
-  // TODO: implement deleteTodo mutation
-  // TODO: implement updateTodo mutation
-  
+  const [updateTodo] = useMutation(UPDATE_TODO, {
+    update(cache, { data: { updateTodo } }) {
+      const existingTodos = cache.readQuery({ query: GET_TODOS });
+
+      if (existingTodos) {
+        cache.writeQuery({
+          query: GET_TODOS,
+          data: {
+            todos: existingTodos.todos.map((todo) =>
+              todo.id === updateTodo.id ? updateTodo : todo
+            ),
+          },
+        });
+      }
+    },
+  });
+
+  const onToggleComplete = async (id, completed) => {
+    try {
+      await updateTodo({
+        variables: {
+          values: { completed: !completed },
+          options: { id },
+        },
+      });
+    } catch (error) {
+      console.error("Error updating todo:", error);
+    }
+  };
 
   return (
     <div>
@@ -43,7 +67,7 @@ const TodoList = ({todos}) => {
             <Checkbox
               className={classes.checkbox}
               checked={todo.completed}
-              onChange={() => onToggleComplete(todo.id, !todo.completed)}
+              onChange={() => onToggleComplete(todo.id, todo.completed)}
               color="primary"
             />
             <Typography className={classes.title}>{todo.title}</Typography>
@@ -54,7 +78,7 @@ const TodoList = ({todos}) => {
         </Card>
       ))}
     </div>
-  );  
+  );
 };
 
 export default TodoList;
