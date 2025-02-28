@@ -12,6 +12,6 @@ type Todo {
 
 type Mutation {
     createTodo(data: JSON!): Todo 
-    deleteTodo(where: JSON!): Int 
+    deleteTodo(where: JSON!): Boolean 
     updateTodo(values: JSON!, options: JSON!): Todo 
 }
