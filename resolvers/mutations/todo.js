@@ -20,9 +20,21 @@ const todo = {
 
   },
 
-  // TODO: Implement the deleteTodo mutation
-  async deleteTodo() {
-    return '';
+  async deleteTodo(parent, args, context, info) {
+    try {
+      const deletedCount = await db.Todo.destroy({
+        where: args.where,
+      });
+  
+      if (deletedCount === 0) {
+        throw new Error("Todo not found");
+      }
+  
+      return true;
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+      throw new Error("Failed to delete todo");
+    }
   },
 
   async updateTodo(parent, args, context, info) {
