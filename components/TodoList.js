@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardContent, Typography, CardActions, Button, Checkbox } from '@material-ui/core';
 import { useMutation } from '@apollo/client';
-import { UPDATE_TODO, GET_TODOS } from '../document-nodes/todo';
+import { UPDATE_TODO, GET_TODOS, DELETE_TODO } from '../document-nodes/todo';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     display: "flex",
     alignItems: "center",
-    flexGrow: 1, 
+    flexGrow: 1,
   },
   checkbox: {
     marginRight: theme.spacing(1),
@@ -46,6 +46,37 @@ const TodoList = ({ todos }) => {
     },
   });
 
+  const [deleteTodo] = useMutation(DELETE_TODO, {
+    optimisticResponse: {
+      deleteTodo: true,
+    },
+    update(cache, { variables }) {
+      if (!variables || !variables.where || !variables.where.id) {
+        return;
+      }
+      const deletedId = variables.where.id;
+      const existingTodos = cache.readQuery({ query: GET_TODOS });
+
+
+      if (!existingTodos || !existingTodos.todos) {
+        return;
+      }
+
+      cache.writeQuery({
+        query: GET_TODOS,
+        data: {
+          todos: existingTodos.todos.filter(t => t.id !== deletedId),
+        },
+      });
+    },
+    refetchQueries: [{ query: GET_TODOS }], // Ensure UI updates in case cache fails
+    onError(err) {
+      console.error("❌ Apollo Error deleting todo:", err);
+    },
+  });
+
+
+
   const onToggleComplete = async (id, completed) => {
     try {
       await updateTodo({
@@ -73,7 +104,17 @@ const TodoList = ({ todos }) => {
             <Typography className={classes.title}>{todo.title}</Typography>
           </CardContent>
           <CardActions className={classes.cardActions}>
-            <Button size="small" color="secondary">Delete</Button>
+            <Button
+              size="small"
+              color="secondary"
+              onClick={() => {
+                deleteTodo({
+                  variables: { where: { id: todo.id } }, 
+                })
+              }}
+            >
+              Delete
+            </Button>
           </CardActions>
         </Card>
       ))}
