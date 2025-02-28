@@ -13,7 +13,6 @@ import { ADD_TODO, GET_TODOS } from '../document-nodes/todo';
 import TodoList from '../components/TodoList'
 import TodoCount from '../components/TodoCount';
 
-// Styles
 const useStyles = makeStyles((theme) => ({
   textField: {
     marginLeft: theme.spacing(1),
@@ -31,7 +30,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Index = () => {
   const classes = useStyles();
-  // TODO: Implement a useQuery for getting a list of current 
   const {loading, data, error} = useQuery(GET_TODOS)
 
   

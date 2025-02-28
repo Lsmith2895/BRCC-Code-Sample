@@ -71,7 +71,7 @@ const TodoList = ({ todos }) => {
     },
     refetchQueries: [{ query: GET_TODOS }], // Ensure UI updates in case cache fails
     onError(err) {
-      console.error("❌ Apollo Error deleting todo:", err);
+      console.error(" Apollo Error deleting todo:", err);
     },
   });
 
