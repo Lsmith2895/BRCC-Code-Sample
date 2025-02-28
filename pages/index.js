@@ -17,7 +17,7 @@ import TodoCount from '../components/TodoCount';
 const useStyles = makeStyles((theme) => ({
   appBar: {
     marginBottom: theme.spacing(3),
-    backgroundColor: '#1976D2', // Nice blue color
+    backgroundColor: '#1976D2',
   },
   title: {
     flexGrow: 1,
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 4,
     padding: theme.spacing(1),
     width: '300px',
-    margin: '12px',
+    margin: '12px !important',
   },
   container: {
     marginTop: theme.spacing(2),
